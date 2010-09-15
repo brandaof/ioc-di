@@ -18,6 +18,10 @@
 
 package org.brandao.ioc;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.brandao.ioc.mapping.Injectable;
+
 /**
  *
  * @author Afonso Brandao
@@ -26,11 +30,15 @@ public class IOCContainer {
 
     private ScopeManager scopeManager;
     private IOCContainer parent;
+    private Map<Object, Injectable> beanDefinitions;
+    private static long id = 0;
 
     public IOCContainer( ScopeManager scopeManager, IOCContainer parent ){
         this.scopeManager = scopeManager;
         this.parent = parent;
+        this.beanDefinitions = new HashMap<Object, Injectable>();
     }
+
 
     public IOCContainer(){
         this( new ScopeManager(), null );
@@ -38,6 +46,10 @@ public class IOCContainer {
 
     public IOCContainer( IOCContainer parent ){
         this( null, parent );
+    }
+
+    static synchronized long getNextId(){
+        return id++;
     }
 
     public ScopeManager getScopeManager() {
@@ -60,7 +72,50 @@ public class IOCContainer {
         return addBean( clazz.getName(), clazz );
     }
 
-    public BeanBuilder addBean( String name, Class clazz ){
-        return null;
+    public BeanBuilder addBean( String name, Class classType ){
+        return addBean( name, classType, ScopeType.PROTOTYPE, false, null );
     }
+
+    public BeanBuilder addBean( String name, Class classType, ScopeType scope ){
+        return addBean( name, classType, scope, false, null );
+    }
+
+    public BeanBuilder addSingleton( String name, String factory ){
+        return addBean( name, null, null, true, factory );
+    }
+
+    public BeanBuilder addSingleton( String name, Class classType ){
+        return addBean( name, classType, null, true, null );
+    }
+
+    public BeanBuilder addBean( String name, Class classType, ScopeType scope, boolean singleton, String factory ){
+
+        if( classType == null && factory == null )
+            throw new IOCException( "the class type is null factory is required!" );
+
+        Injectable oldBean = getBeanDefinition( name );
+
+        if( oldBean != null && oldBean.getTarget() != classType )
+            throw new BeanExistException( name );
+        else
+        if( oldBean != null )
+            removeBeanDefinition( name );
+
+        BeanBuilder bean = new BeanBuilder( classType, name, scope, singleton, factory, this );
+        addBeanDefinition( bean );
+        return bean;
+    }
+
+    protected void removeBeanDefinition( String name ){
+        beanDefinitions.remove(name);
+    }
+
+    protected Injectable getBeanDefinition( String name ){
+        return beanDefinitions.get(name);
+    }
+
+    protected void addBeanDefinition( Injectable inject ){
+        beanDefinitions.put(inject.getName(),inject);
+    }
+
 }
