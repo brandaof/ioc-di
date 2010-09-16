@@ -18,8 +18,8 @@
 package org.brandao.ioc;
 
 import java.lang.reflect.Method;
-import org.brandao.brutos.bean.BeanInstance;
-import org.brandao.brutos.bean.SetterProperty;
+import org.brandao.ioc.bean.BeanInstance;
+import org.brandao.ioc.bean.SetterProperty;
 import org.brandao.ioc.mapping.ClassType;
 import org.brandao.ioc.mapping.Injectable;
 import org.brandao.ioc.mapping.PropertyInject;
@@ -90,8 +90,14 @@ public class BeanBuilder extends Injectable{
         return this;
     }
 
-    public void setFactoryMethod( String method ){
+    public BeanBuilder setFactoryMethod( String method ){
         getConstructor().setMethodFactory(method);
+        return this;
+    }
+
+    public BeanBuilder setFactory(String factory) {
+        super.setFactoryRef(factory);
+        return this;
     }
 
     public BeanBuilder addConstructiorArg(Class clazz){

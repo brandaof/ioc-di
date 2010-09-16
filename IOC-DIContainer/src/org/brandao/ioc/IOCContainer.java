@@ -31,12 +31,14 @@ public class IOCContainer {
     private ScopeManager scopeManager;
     private IOCContainer parent;
     private Map<Object, Injectable> beanDefinitions;
+    private BeanFactory beanFactory;
     private static long id = 0;
 
     public IOCContainer( ScopeManager scopeManager, IOCContainer parent ){
         this.scopeManager = scopeManager;
         this.parent = parent;
         this.beanDefinitions = new HashMap<Object, Injectable>();
+        this.beanFactory = new BeanFactory( this, scopeManager );
     }
 
 
@@ -118,4 +120,15 @@ public class IOCContainer {
         beanDefinitions.put(inject.getName(),inject);
     }
 
+    public Object getBean( Class clazz ){
+        return getBean( clazz.getName() );
+    }
+
+    public Object getBean( String name ){
+        Injectable beanDefinition = beanDefinitions.get(name);
+        if(beanDefinition==null)
+            throw new BeanNotFoundException(name);
+        else
+            return beanFactory.getInstance(beanDefinition);
+    }
 }

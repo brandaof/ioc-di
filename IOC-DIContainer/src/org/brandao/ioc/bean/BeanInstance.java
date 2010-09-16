@@ -14,7 +14,7 @@
  * either express or implied.
  *
  */
-package org.brandao.brutos.bean;
+package org.brandao.ioc.bean;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

@@ -15,7 +15,7 @@
  *
  */
 
-package org.brandao.brutos.bean;
+package org.brandao.ioc.bean;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

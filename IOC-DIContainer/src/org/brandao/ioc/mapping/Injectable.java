@@ -111,7 +111,7 @@ public class Injectable {
         return factory;
     }
 
-    public void setFactory(String factory) {
+    protected void setFactoryRef(String factory) {
         this.factory = factory;
     }
 }
