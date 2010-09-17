@@ -35,7 +35,7 @@ import org.brandao.ioc.web.RequestContextListener;
  *
  * @author Afonso Brandao
  */
-public class TestIOCContainer extends TestCase{
+public class IOCContainerTest extends TestCase{
 
     public void testSimpleBean(){
         IOCContainer iocContainer = new IOCContainer();
@@ -227,6 +227,16 @@ public class TestIOCContainer extends TestCase{
             listener.contextDestroyed(sce);
         }
 
+    }
+
+    public void testRootContainer(){
+        RootContainer rootContainer = RootContainer.getInstance();
+
+        rootContainer.addBean(TestHelper.MySimpleBean.class);
+
+        IOCContainer iocContainer = new IOCContainer();
+        
+        assertNotNull( iocContainer.getBean(TestHelper.MySimpleBean.class) );
     }
 
 }

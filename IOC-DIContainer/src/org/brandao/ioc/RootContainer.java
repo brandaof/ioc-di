@@ -26,7 +26,7 @@ public final class RootContainer extends IOCContainer{
     private static RootContainer container = new RootContainer();
 
     public RootContainer(){
-        super( new ScopeManager(), null );
+        super( new ScopeManager(null), null );
     }
     
     public static RootContainer getInstance(){

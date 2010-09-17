@@ -43,7 +43,7 @@ public class IOCContainer {
 
 
     public IOCContainer(){
-        this( RootContainer.getInstance().getScopeManager(), RootContainer.getInstance() );
+        this( new ScopeManager(), RootContainer.getInstance() );
     }
 
     public IOCContainer( IOCContainer parent ){

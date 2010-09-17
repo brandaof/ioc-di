@@ -33,14 +33,14 @@ public class ScopeManager{
     private ScopeManager parent;
     
     public ScopeManager() {
-        scopes = new HashMap<String,Scope>();
-        register( "singleton", new SingletonScope() );
-        register( "prototype", new ProtoTypeScope() );
+        this( RootContainer.getInstance().getScopeManager() );
     }
 
     public ScopeManager( ScopeManager parent ) {
-        this();
         this.parent = parent;
+        scopes      = new HashMap<String,Scope>();
+        register( "singleton", new SingletonScope() );
+        register( "prototype", new ProtoTypeScope() );
     }
 
     public void register( String id, Scope scope ){
@@ -52,7 +52,10 @@ public class ScopeManager{
     }
 
     public Scope get( String id ){
-        return scopes.get( id );
+        if( scopes.containsKey(id) )
+            return scopes.get( id );
+        else
+            return parent == null? null : parent.get(id);
     }
 
     public ScopeManager getParent() {
