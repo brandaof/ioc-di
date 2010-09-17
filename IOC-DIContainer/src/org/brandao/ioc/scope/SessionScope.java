@@ -36,20 +36,16 @@ public class SessionScope implements Scope{
 
     public void put(String name, Object value) {
         HttpServletRequest request = (HttpServletRequest) requests.get();
-        if( request == null )
-            throw new IOCException( getName() + " scope: not configured!" );
         request.getSession().setAttribute(name, value);
     }
 
     public Object get(String name) {
         HttpServletRequest request = (HttpServletRequest) requests.get();
-        if( request == null )
-            throw new IOCException( getName() + " scope: not configured!" );
         return request.getSession().getAttribute(name);
     }
 
     public String getName(){
-        return ScopeType.REQUEST.toString();
+        return ScopeType.SESSION.toString();
     }
 
 }
