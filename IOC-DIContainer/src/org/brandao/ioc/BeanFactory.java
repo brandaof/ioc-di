@@ -48,7 +48,11 @@ public class BeanFactory {
         else
             scope = scopeManager.get( beanDefinition.getScope().toString() );
 
-        return scope.get( beanDefinition.getName() );
+        if( scope == null )
+            throw new IOCException( beanDefinition.getScope().toString()
+                        + " scope: not configured!" );
+        else
+            return scope.get( beanDefinition.getName() );
 
     }
 

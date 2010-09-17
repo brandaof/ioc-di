@@ -15,31 +15,22 @@
  *
  */
 
-
-package org.brandao.ioc.scope;
-
-import org.brandao.ioc.Scope;
-import org.brandao.ioc.ScopeType;
+package org.brandao.ioc;
 
 /**
  *
  * @author Afonso Brandao
  */
-public class ProtoTypeScope implements Scope{
+public final class RootContainer extends IOCContainer{
 
+    private static RootContainer container = new RootContainer();
 
-    public ProtoTypeScope() {
+    public RootContainer(){
+        super( new ScopeManager(), null );
     }
-
-    public void put(String name, Object value) {
-    }
-
-    public Object get(String name) {
-        return null;
-    }
-
-    public String getName(){
-        return ScopeType.PROTOTYPE.toString();
+    
+    public static RootContainer getInstance(){
+        return container;
     }
     
 }

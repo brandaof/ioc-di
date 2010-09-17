@@ -43,7 +43,7 @@ public class IOCContainer {
 
 
     public IOCContainer(){
-        this( new ScopeManager(), null );
+        this( RootContainer.getInstance().getScopeManager(), RootContainer.getInstance() );
     }
 
     public IOCContainer( IOCContainer parent ){
@@ -125,10 +125,12 @@ public class IOCContainer {
     }
 
     public Object getBean( String name ){
-        Injectable beanDefinition = beanDefinitions.get(name);
-        if(beanDefinition==null)
-            throw new BeanNotFoundException(name);
+        if( beanDefinitions.containsKey(name) )
+            return beanFactory.getInstance(beanDefinitions.get(name));
         else
-            return beanFactory.getInstance(beanDefinition);
+        if( parent != null )
+            return parent.getBean(name);
+        else
+            throw new BeanNotFoundException(name);
     }
 }

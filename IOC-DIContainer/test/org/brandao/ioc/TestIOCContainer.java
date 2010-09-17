@@ -17,11 +17,19 @@
 
 package org.brandao.ioc;
 
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletRequestEvent;
 import junit.framework.TestCase;
 import org.brandao.ioc.TestHelper.MyBean;
 import org.brandao.ioc.TestHelper.MyEnum;
 import org.brandao.ioc.TestHelper.MyFactory;
 import org.brandao.ioc.TestHelper.MySimpleBean;
+import org.brandao.ioc.web.ContextLoaderListener;
+import org.brandao.ioc.web.RequestContextListener;
 
 /**
  *
@@ -113,6 +121,112 @@ public class TestIOCContainer extends TestCase{
                     .getBean(MySimpleBean.class);
 
         assertNotNull( instance );
+    }
+
+    public void testGlobalScope(){
+        MockServletContext servletContext = new MockServletContext();
+        ServletContextEvent sce = new ServletContextEvent( servletContext );
+        ContextLoaderListener listener = new ContextLoaderListener();
+
+        try{
+            listener.contextInitialized(sce);
+            IOCContainer iocContainer = new IOCContainer();
+            iocContainer
+                .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.GLOBAL);
+
+            Object instance = iocContainer.getBean("myBean");
+            Object instance2 = iocContainer.getBean("myBean");
+            assertTrue( instance == instance2 );
+            assertNotNull( servletContext.getAttribute("myBean") );
+        }
+        finally{
+            listener.contextDestroyed(sce);
+        }
+
+    }
+
+    public void testSingletonScope(){
+        IOCContainer iocContainer = new IOCContainer();
+        iocContainer
+            .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.SINGLETON);
+
+        Object instance = iocContainer.getBean("myBean");
+        Object instance2 = iocContainer.getBean("myBean");
+        assertTrue( instance == instance2 );
+    }
+
+    public void testPrototypeScope(){
+        IOCContainer iocContainer = new IOCContainer();
+        iocContainer
+            .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.PROTOTYPE);
+
+        Object instance = iocContainer.getBean("myBean");
+        Object instance2 = iocContainer.getBean("myBean");
+        assertTrue( instance != instance2 );
+    }
+
+    public void testRequestScope(){
+        MockServletContext servletContext = new MockServletContext();
+        ServletContextEvent sce = new ServletContextEvent( servletContext );
+        ContextLoaderListener listener = new ContextLoaderListener();
+        try{
+            listener.contextInitialized(sce);
+            RequestContextListener requestListener = new RequestContextListener();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            ServletRequestEvent sre = new ServletRequestEvent(servletContext, request);
+
+            try{
+                requestListener.requestInitialized(sre);
+                IOCContainer iocContainer = new IOCContainer();
+                iocContainer
+                    .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.REQUEST);
+
+                Object instance = iocContainer.getBean("myBean");
+                Object instance2 = iocContainer.getBean("myBean");
+                assertTrue( instance == instance2 );
+                assertNotNull( request.getAttribute("myBean") );
+            }
+            finally{
+                requestListener.requestDestroyed(sre);
+            }
+        }
+        finally{
+            listener.contextDestroyed(sce);
+        }
+
+    }
+
+    public void testSessionScope(){
+        MockServletContext servletContext = new MockServletContext();
+        ServletContextEvent sce = new ServletContextEvent( servletContext );
+        ContextLoaderListener listener = new ContextLoaderListener();
+        try{
+            listener.contextInitialized(sce);
+            RequestContextListener requestListener = new RequestContextListener();
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            MockHttpSession session = new MockHttpSession();
+            ServletRequestEvent sre = new ServletRequestEvent(servletContext, request);
+            request.setSession(session);
+
+            try{
+                requestListener.requestInitialized(sre);
+                IOCContainer iocContainer = new IOCContainer();
+                iocContainer
+                .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.SESSION);
+
+                Object instance = iocContainer.getBean("myBean");
+                Object instance2 = iocContainer.getBean("myBean");
+                assertTrue( instance == instance2 );
+                assertNotNull( request.getSession().getAttribute("myBean") );
+            }
+            finally{
+                requestListener.requestDestroyed(sre);
+            }
+        }
+        finally{
+            listener.contextDestroyed(sce);
+        }
+
     }
 
 }

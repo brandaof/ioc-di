@@ -26,5 +26,7 @@ public interface Scope {
     public void put( String name, Object value);
     
     public Object get( String name );
+
+    public String getName();
     
 }

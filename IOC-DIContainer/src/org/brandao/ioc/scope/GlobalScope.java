@@ -15,11 +15,9 @@
  *
  */
 
-
 package org.brandao.ioc.scope;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.ServletContext;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
 
@@ -27,27 +25,24 @@ import org.brandao.ioc.ScopeType;
  *
  * @author Afonso Brandao
  */
-public class SingletonScope implements Scope{
+public class GlobalScope implements Scope{
 
-    private final Map<String,Object> data;
+    private ServletContext context;
 
-    public SingletonScope() {
-        this.data = new HashMap<String,Object>();
+    public GlobalScope( ServletContext context ){
+        this.context = context;
     }
 
     public void put(String name, Object value) {
-        synchronized( data ){
-            if(!data.containsKey(name) )
-                data.put( name, value );
-        }
+        context.setAttribute(name, value);
     }
 
     public Object get(String name) {
-        return data.get( name );
+        return context.getAttribute(name);
     }
 
     public String getName(){
-        return ScopeType.SINGLETON.toString();
+        return ScopeType.GLOBAL.toString();
     }
 
 }

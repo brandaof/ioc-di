@@ -27,12 +27,18 @@ public class ScopeType {
 
     public static final ScopeType SINGLETON = new ScopeType( "singleton" );
     public static final ScopeType PROTOTYPE = new ScopeType( "prototype" );
+    public static final ScopeType GLOBAL = new ScopeType( "global" );
+    public static final ScopeType REQUEST = new ScopeType( "request" );
+    public static final ScopeType SESSION = new ScopeType( "session" );
 
     private static Map defaultScopes = new HashMap();
 
     static{
         defaultScopes.put( SINGLETON.toString() , SINGLETON );
         defaultScopes.put( PROTOTYPE.toString() , PROTOTYPE );
+        defaultScopes.put( GLOBAL.toString() , GLOBAL );
+        defaultScopes.put( REQUEST.toString() , REQUEST );
+        defaultScopes.put( SESSION.toString() , SESSION );
     }
 
     private String name;
