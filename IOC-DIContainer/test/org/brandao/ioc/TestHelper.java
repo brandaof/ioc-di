@@ -17,6 +17,9 @@
 
 package org.brandao.ioc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Afonso Brandao
@@ -60,5 +63,26 @@ public class TestHelper {
             return new MySimpleBean();
         }
     }
-    
+
+    public static class CustomScope implements Scope{
+
+        private final Map<String,Object> data;
+
+        public CustomScope() {
+            this.data = new HashMap<String,Object>();
+        }
+
+        public void put(String name, Object value) {
+            data.put( name, value );
+        }
+
+        public Object get(String name) {
+            return data.get( name );
+        }
+
+        public String getName(){
+            return "customScope";
+        }
+
+    }
 }

@@ -24,6 +24,7 @@ import com.mockrunner.mock.web.MockServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import junit.framework.TestCase;
+import org.brandao.ioc.TestHelper.CustomScope;
 import org.brandao.ioc.TestHelper.MyBean;
 import org.brandao.ioc.TestHelper.MyEnum;
 import org.brandao.ioc.TestHelper.MyFactory;
@@ -237,6 +238,21 @@ public class IOCContainerTest extends TestCase{
         IOCContainer iocContainer = new IOCContainer();
         
         assertNotNull( iocContainer.getBean(TestHelper.MySimpleBean.class) );
+    }
+
+    public void testCustomScope(){
+        CustomScope customScope = new CustomScope();
+        IOCContainer iocContainer = new IOCContainer();
+        iocContainer.getScopeManager()
+                .register(customScope.getName(), customScope);
+
+        iocContainer
+            .addBean( "myBean", TestHelper.MySimpleBean.class,
+                ScopeType.valueOf( customScope.getName() ) );
+
+        Object instance = iocContainer.getBean("myBean");
+
+        assertNotNull( instance );
     }
 
 }
