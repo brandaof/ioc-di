@@ -177,7 +177,9 @@ public class BeanFactory {
                     value = getValueInject( (ValueInject)arg );
                 else
                 if( arg instanceof GenericValueInject ){
-                    value = container.getBean( prop.getName() );
+                    value = container.contains( prop.getName() )? 
+                                container.getBean( prop.getName() ) :
+                                container.getBean( prop.getMethod().getParameterTypes()[0] );
                 }
                 else
                     value = container.getBean( arg.getName() );

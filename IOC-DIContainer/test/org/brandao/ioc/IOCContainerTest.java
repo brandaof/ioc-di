@@ -270,6 +270,21 @@ public class IOCContainerTest extends TestCase{
         assertNotNull( instance.getBean() );
     }
 
+    public void testPropertyAutoInjectByType(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer
+            .addBean(MySimpleBean.class);
+
+        iocContainer
+            .addBean(MyBean.class)
+                .addProperty("bean");
+
+        MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
+        assertNotNull( instance );
+        assertNotNull( instance.getBean() );
+    }
+
     public void testConstructorArgAutoInject(){
         IOCContainer iocContainer = new IOCContainer();
 

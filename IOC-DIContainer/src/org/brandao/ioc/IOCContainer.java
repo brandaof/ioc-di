@@ -134,4 +134,13 @@ public class IOCContainer {
         else
             throw new BeanNotFoundException(String.valueOf(key));
     }
+
+    public boolean contains( Object key ){
+        boolean exist = beanDefinitions.containsKey(key);
+        
+        if( !exist && parent != null )
+            exist = parent.contains(key);
+
+        return exist;
+    }
 }
