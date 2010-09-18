@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.brandao.ioc.mapping.ConstructorInject;
+import org.brandao.ioc.mapping.GenericValueInject;
 import org.brandao.ioc.mapping.Injectable;
 import org.brandao.ioc.mapping.PropertyInject;
 import org.brandao.ioc.mapping.ValueInject;
@@ -69,14 +70,19 @@ public class BeanFactory {
 
     private Object getInstanceByConstructor( Injectable beanDefinition ) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException{
         ConstructorInject cons = beanDefinition.getConstructor();
-        List<Object> values    = new ArrayList();
-        List<Class<?>> types   = new ArrayList();
-
+        //List<Object> values    = new ArrayList();
+        //List<Class<?>> types   = new ArrayList();
+        /*
         if( cons != null ){
             List<Injectable> args = cons.getArgs();
             for( Injectable arg: args ){
                 if( arg instanceof ValueInject ){
                     values.add( getValueInject( (ValueInject)arg ) );
+                    types.add( arg.getTarget() );
+                }
+                else
+                if( arg instanceof GenericValueInject ){
+                    values.add( container.getBean( arg.getTarget() ) );
                     types.add( arg.getTarget() );
                 }
                 else{
@@ -85,11 +91,13 @@ public class BeanFactory {
                 }
             }
         }
+        */
         //Constructor insCons = inject.getTarget().getConstructor( types.toArray( new Class[]{} ) );
         ConstructorInject conInject = beanDefinition.getConstructor();
         if( conInject.isConstructor() ){
             Constructor insCons = beanDefinition.getConstructor().getContructor();
-            return insCons.newInstance( values.toArray( new Object[]{} ) );
+            //return insCons.newInstance( values.toArray( new Object[]{} ) );
+            return insCons.newInstance( this.getValues(cons.getArgs()) );
         }
         else{
             Object factory =
@@ -102,8 +110,28 @@ public class BeanFactory {
                     factory == null?
                         beanDefinition.getTarget() :
                         factory,
-                    values.toArray( new Object[]{} ) );
+                    getValues(cons.getArgs())
+                    /*values.toArray( new Object[]{} )*/ );
         }
+    }
+
+    private Object[] getValues( List<Injectable> args ){
+
+        Object[] values = new Object[ args.size() ];
+
+        for( int i=0;i<args.size();i++ ){
+            Injectable arg = args.get(i);
+
+            if( arg instanceof ValueInject )
+                values[i] = getValueInject( (ValueInject)arg );
+            else
+            if( arg instanceof GenericValueInject )
+                values[i] = container.getBean( arg.getTarget() );
+            else
+                values[i] = container.getBean( arg.getName() );
+        }
+
+        return values;
     }
 
     private Object getValueInject( ValueInject value ){
@@ -147,6 +175,10 @@ public class BeanFactory {
                 Object value = null;
                 if( arg instanceof ValueInject )
                     value = getValueInject( (ValueInject)arg );
+                else
+                if( arg instanceof GenericValueInject ){
+                    value = container.getBean( prop.getName() );
+                }
                 else
                     value = container.getBean( arg.getName() );
 

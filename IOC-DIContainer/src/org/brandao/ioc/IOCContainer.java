@@ -118,19 +118,20 @@ public class IOCContainer {
 
     protected void addBeanDefinition( Injectable inject ){
         beanDefinitions.put(inject.getName(),inject);
+        beanDefinitions.put(inject.getTarget(),inject);
     }
 
     public Object getBean( Class clazz ){
-        return getBean( clazz.getName() );
+        return getBean( (Object)clazz );
     }
 
-    public Object getBean( String name ){
-        if( beanDefinitions.containsKey(name) )
-            return beanFactory.getInstance(beanDefinitions.get(name));
+    public Object getBean( Object key ){
+        if( beanDefinitions.containsKey(key) )
+            return beanFactory.getInstance(beanDefinitions.get(key));
         else
         if( parent != null )
-            return parent.getBean(name);
+            return parent.getBean(key);
         else
-            throw new BeanNotFoundException(name);
+            throw new BeanNotFoundException(String.valueOf(key));
     }
 }

@@ -255,4 +255,48 @@ public class IOCContainerTest extends TestCase{
         assertNotNull( instance );
     }
 
+    public void testPropertyAutoInject(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer
+            .addBean("bean",MySimpleBean.class);
+
+        iocContainer
+            .addBean(MyBean.class)
+                .addProperty("bean");
+
+        MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
+        assertNotNull( instance );
+        assertNotNull( instance.getBean() );
+    }
+
+    public void testConstructorArgAutoInject(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer
+            .addBean("bean",MySimpleBean.class);
+
+        iocContainer
+            .addBean(MyBean.class).addConstructiorArg();
+
+        MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
+        assertNotNull( instance );
+        assertNotNull( instance.getBean() );
+    }
+
+    public void testConstructorArgAutoInjectWithFactory(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer.addBean("myEnumId", String.class)
+                .addConstructiorArg("VALUE2");
+        
+        iocContainer
+            .addBean(MyEnum.class)
+                .addConstructiorArg()
+                .setFactoryMethod("valueOf");
+
+        MyEnum instance = (MyEnum) iocContainer.getBean(MyEnum.class);
+        assertEquals( MyEnum.VALUE2, instance );
+    }
+
 }

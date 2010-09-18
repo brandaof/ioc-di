@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.brandao.ioc.bean.BeanInstance;
 import org.brandao.ioc.bean.SetterProperty;
 import org.brandao.ioc.mapping.ClassType;
+import org.brandao.ioc.mapping.GenericValueInject;
 import org.brandao.ioc.mapping.Injectable;
 import org.brandao.ioc.mapping.PropertyInject;
 import org.brandao.ioc.mapping.ValueInject;
@@ -90,6 +91,11 @@ public class BeanBuilder extends Injectable{
         return this;
     }
 
+    public BeanBuilder addConstructiorArg(){
+        getConstructor().addArg( new GenericValueInject() );
+        return this;
+    }
+
     public BeanBuilder setFactoryMethod( String method ){
         getConstructor().setMethodFactory(method);
         return this;
@@ -130,6 +136,9 @@ public class BeanBuilder extends Injectable{
         if( refBean == null )
             throw new BeanNotFoundException( arg );
 
+        addProperty(name, refBean);
+        return this;
+        /*
         SetterProperty set = beanInstance.getSetter(name);
         Method method = set == null? null : set.getMethod();
 
@@ -147,8 +156,27 @@ public class BeanBuilder extends Injectable{
             )
         );
         return this;
-        
+        */
+    }
 
+    protected PropertyInject addProperty( String name, Injectable arg ){
+        SetterProperty set = beanInstance.getSetter(name);
+        Method method = set == null? null : set.getMethod();
+
+        if( method == null ){
+            Class<?> classType = getTarget();
+            throw new IOCException( "can not set property: " + name + " in " + classType.getName() );
+        }
+
+        PropertyInject inject =  new PropertyInject(
+                name,
+                arg,
+                method
+            );
+
+
+        getProperties().add( inject );
+        return inject;
     }
 
     public BeanBuilder addPropertyValue( String name, Object arg ){
@@ -188,6 +216,10 @@ public class BeanBuilder extends Injectable{
     }
 
     public BeanBuilder addPropertyValue( String name, Class argType, Object arg ){
+        ValueInject inject = new ValueInject( argType, arg );
+        addProperty(name, inject);
+        return this;
+        /*
         Method method = null;
         try{
             String methodName =
@@ -222,6 +254,12 @@ public class BeanBuilder extends Injectable{
                 method
             )
         );
+        return this;*/
+    }
+
+
+    public BeanBuilder addProperty( String name ){
+        addProperty(name, new GenericValueInject());
         return this;
     }
 

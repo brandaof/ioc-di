@@ -119,14 +119,16 @@ public class ConstructorInject {
 
         int i=0;
         for( Injectable arg: args ){
-            if( arg.getTarget() != null )
+            //if( arg.getTarget() != null )
                 classArgs[ i ] = arg.getTarget();
             i++;
         }
 
         for( Constructor con: clazz.getConstructors() ){
-            if( isCompatible( con, classArgs ) )
+            if( isCompatible( con, classArgs ) ){
+                overrideTypes(args, con.getParameterTypes());
                 return con;
+            }
         }
 
         String msg = "not found: " + clazz.getName() + "( ";
@@ -146,7 +148,7 @@ public class ConstructorInject {
 
         int i=0;
         for( Injectable arg: args ){
-            if( arg.getTarget() != null )
+            //if( arg.getTarget() != null )
                 classArgs[ i ] = arg.getTarget();
             i++;
         }
@@ -154,8 +156,10 @@ public class ConstructorInject {
         for( Method m: clazz.getDeclaredMethods() ){
             if( m.getName().equals(name) && 
                 /*( inject.getFactory() != null || Modifier.isStatic( m.getModifiers() ) ) &&*/
-                isCompatible( m, classArgs ) )
+                isCompatible( m, classArgs ) ){
+                overrideTypes(args, m.getParameterTypes());
                 return m;
+            }
         }
 
         String msg = "not found: " + clazz.getName() + "( ";
@@ -182,6 +186,16 @@ public class ConstructorInject {
         }
         else
             return false;
+
+    }
+
+    private void overrideTypes( List<Injectable> args, Class[] classArgs ){
+        for( int i=0;i<args.size();i++ ){
+            Injectable arg = args.get(i);
+            if( arg instanceof GenericValueInject ){
+                arg.setTarget( classArgs[i] );
+            }
+        }
 
     }
 
