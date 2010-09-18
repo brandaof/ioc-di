@@ -26,6 +26,7 @@ import javax.servlet.ServletRequestEvent;
 import junit.framework.TestCase;
 import org.brandao.ioc.TestHelper.CustomScope;
 import org.brandao.ioc.TestHelper.MyBean;
+import org.brandao.ioc.TestHelper.MyBeanByContructor;
 import org.brandao.ioc.TestHelper.MyEnum;
 import org.brandao.ioc.TestHelper.MyFactory;
 import org.brandao.ioc.TestHelper.MySimpleBean;
@@ -53,6 +54,30 @@ public class IOCContainerTest extends TestCase{
         MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
         assertNotNull( instance );
         assertNotNull( instance.getBean() );
+    }
+
+    public void testConstructorInjectMultipleArgs(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer.addBean(String.class)
+                .addConstructiorArg( "Texto..." );
+
+        iocContainer.addBean(Integer.class)
+                .addConstructiorArg( 100 );
+
+        iocContainer.addBean("myBean", MySimpleBean.class, ScopeType.SINGLETON );
+
+        iocContainer
+            .addBean(MyBeanByContructor.class)
+                .addConstructiorArg()
+                .addConstructiorArg()
+                .addConstructiorArg();
+
+        MyBeanByContructor instance = (MyBeanByContructor) iocContainer.getBean(MyBeanByContructor.class);
+        assertNotNull( instance );
+        assertEquals( "Texto...", instance.getStringValue() );
+        assertEquals( 100, instance.getIntValue() );
+        assertEquals( iocContainer.getBean(MySimpleBean.class), instance.getBean() );
     }
 
     public void testConstructorInjectRef(){

@@ -32,6 +32,44 @@ public class TestHelper {
         VALUE3
     }
 
+    public static class MyBeanByContructor{
+        
+        private int intValue;
+        private String stringValue;
+        private MySimpleBean bean;
+
+        public MyBeanByContructor( String arg0, int arg1, MySimpleBean arg3 ){
+            this.intValue = arg1;
+            this.stringValue = arg0;
+            this.bean = arg3;
+        }
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public void setIntValue(int intValue) {
+            this.intValue = intValue;
+        }
+
+        public String getStringValue() {
+            return stringValue;
+        }
+
+        public void setStringValue(String stringValue) {
+            this.stringValue = stringValue;
+        }
+
+        public MySimpleBean getBean() {
+            return bean;
+        }
+
+        public void setBean(MySimpleBean bean) {
+            this.bean = bean;
+        }
+
+    }
+
     public static class MySimpleBean{
     }
 

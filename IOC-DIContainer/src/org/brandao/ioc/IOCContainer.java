@@ -20,6 +20,7 @@ package org.brandao.ioc;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.brandao.ioc.mapping.ClassType;
 import org.brandao.ioc.mapping.Injectable;
 
 /**
@@ -118,7 +119,7 @@ public class IOCContainer {
 
     protected void addBeanDefinition( Injectable inject ){
         beanDefinitions.put(inject.getName(),inject);
-        beanDefinitions.put(inject.getTarget(),inject);
+        beanDefinitions.put(ClassType.getWrapper( inject.getTarget() ),inject);
     }
 
     public Object getBean( Class clazz ){
@@ -126,6 +127,7 @@ public class IOCContainer {
     }
 
     public Object getBean( Object key ){
+        key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
         if( beanDefinitions.containsKey(key) )
             return beanFactory.getInstance(beanDefinitions.get(key));
         else
