@@ -18,7 +18,9 @@ package org.brandao.ioc.bean;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.brandao.ioc.IOCException;
 import org.brandao.ioc.mapping.ClassType;
@@ -50,6 +52,22 @@ public class BeanInstance {
         this.data   = getBeanData( this.clazz );
     }
 
+    public List<SetterProperty> getSetters(){
+        List<SetterProperty> list = new ArrayList<SetterProperty>();
+        for( Method m: data.getSetter().values() ){
+            list.add( new SetterProperty( m, null ) );
+        }
+        return list;
+    }
+
+    public List<GetterProperty> getGetters(){
+        List<GetterProperty> list = new ArrayList<GetterProperty>();
+        for( Method m: data.getGetter().values() ){
+            list.add( new GetterProperty( m, null ) );
+        }
+        return list;
+    }
+    
     public SetterProperty getSetter( String property ){
         Method method = data.getSetter().get(property);
         if( method == null )

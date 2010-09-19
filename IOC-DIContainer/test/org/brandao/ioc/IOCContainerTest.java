@@ -339,4 +339,21 @@ public class IOCContainerTest extends TestCase{
         assertEquals( MyEnum.VALUE2, instance );
     }
 
+    public void testAutoDefinition(){
+        IOCContainer iocContainer = new IOCContainer();
+
+        iocContainer.addBean(String.class)
+                .addConstructiorArg( "Texto..." );
+
+        iocContainer.addBean(Integer.class)
+                .addConstructiorArg( 100 );
+
+        iocContainer.setAutoDefinition(true);
+        MyBeanByContructor instance = (MyBeanByContructor) iocContainer.getBean(MyBeanByContructor.class);
+        assertNotNull( instance );
+        assertEquals( "Texto...", instance.getStringValue() );
+        assertEquals( 100, instance.getIntValue() );
+        assertNotNull( instance.getBean() );
+    }
+
 }
