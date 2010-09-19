@@ -18,6 +18,7 @@
 package org.brandao.ioc.scope;
 
 import javax.servlet.ServletContext;
+import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
 
@@ -33,16 +34,21 @@ public class GlobalScope implements Scope{
         this.context = context;
     }
 
-    public void put(String name, Object value) {
-        context.setAttribute(name, value);
-    }
-
-    public Object get(String name) {
-        return context.getAttribute(name);
-    }
-
     public String getName(){
         return ScopeType.GLOBAL.toString();
+    }
+
+    public Object get(String beanName, ObjectFactory factory) {
+        Object value = context.getAttribute(beanName);
+        if( value == null ){
+            value = factory.getObject();
+            context.setAttribute(beanName, value);
+        }
+        return value;
+    }
+
+    public void remove(String name) {
+        context.removeAttribute(name);
     }
 
 }

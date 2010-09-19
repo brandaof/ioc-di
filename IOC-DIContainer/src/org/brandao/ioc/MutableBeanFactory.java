@@ -14,33 +14,19 @@
  * either express or implied.
  *
  */
+package org.brandao.ioc;
 
-
-package org.brandao.ioc.scope;
-
-import org.brandao.ioc.ObjectFactory;
-import org.brandao.ioc.Scope;
-import org.brandao.ioc.ScopeType;
+import org.brandao.ioc.mapping.Injectable;
 
 /**
  *
  * @author Afonso Brandao
  */
-public class ProtoTypeScope implements Scope{
+public interface MutableBeanFactory {
 
+    public void addBeanDefinition( Injectable beanDefinition );
 
-    public ProtoTypeScope() {
-    }
+    public void removeBeanDefinition( Object key );
 
-    public String getName(){
-        return ScopeType.PROTOTYPE.toString();
-    }
-
-    public Object get(String beanName, ObjectFactory factory) {
-        return factory.getObject();
-    }
-
-    public void remove(String name) {
-    }
-    
+    public Injectable getBeanDefinition( Object key );
 }

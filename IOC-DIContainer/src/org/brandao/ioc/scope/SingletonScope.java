@@ -20,6 +20,7 @@ package org.brandao.ioc.scope;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
 
@@ -48,6 +49,31 @@ public class SingletonScope implements Scope{
 
     public String getName(){
         return ScopeType.SINGLETON.toString();
+    }
+
+    public Object get(String beanName, ObjectFactory factory) {
+        
+        if( data.containsKey(beanName) )
+            return data.get(beanName);
+        else
+            return get0(beanName, factory);
+        
+    }
+
+    protected Object get0(String beanName, ObjectFactory factory){
+        synchronized( data ){
+            if(!data.containsKey(beanName) ){
+                Object value = factory.getObject();
+                data.put( beanName, value );
+                return value;
+            }
+            else
+                return data.get(beanName);
+        }
+    }
+
+    public void remove(String name) {
+        data.remove(name);
     }
 
 }

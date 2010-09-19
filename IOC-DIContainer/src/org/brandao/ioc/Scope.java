@@ -22,11 +22,11 @@ package org.brandao.ioc;
  * @author Afonso Brandao
  */
 public interface Scope {
-    
-    public void put( String name, Object value);
-    
-    public Object get( String name );
 
+    public Object get( String beanName, ObjectFactory factory );
+    
     public String getName();
+
+    public void remove( String name );
     
 }

@@ -15,32 +15,14 @@
  *
  */
 
-
-package org.brandao.ioc.scope;
-
-import org.brandao.ioc.ObjectFactory;
-import org.brandao.ioc.Scope;
-import org.brandao.ioc.ScopeType;
+package org.brandao.ioc;
 
 /**
  *
  * @author Afonso Brandao
  */
-public class ProtoTypeScope implements Scope{
+public interface ObjectFactory {
 
+    public Object getObject();
 
-    public ProtoTypeScope() {
-    }
-
-    public String getName(){
-        return ScopeType.PROTOTYPE.toString();
-    }
-
-    public Object get(String beanName, ObjectFactory factory) {
-        return factory.getObject();
-    }
-
-    public void remove(String name) {
-    }
-    
 }

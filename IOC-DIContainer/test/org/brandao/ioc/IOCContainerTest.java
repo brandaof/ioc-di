@@ -18,7 +18,6 @@
 package org.brandao.ioc;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
 import javax.servlet.ServletContextEvent;

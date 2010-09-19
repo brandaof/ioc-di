@@ -18,7 +18,8 @@ package org.brandao.ioc.scope;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import org.brandao.ioc.IOCException;
+import javax.servlet.http.HttpSession;
+import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
 
@@ -33,19 +34,24 @@ public class SessionScope implements Scope{
     public SessionScope( ThreadLocal<ServletRequest> requests ){
         this.requests = requests;
     }
-
-    public void put(String name, Object value) {
-        HttpServletRequest request = (HttpServletRequest) requests.get();
-        request.getSession().setAttribute(name, value);
-    }
-
-    public Object get(String name) {
-        HttpServletRequest request = (HttpServletRequest) requests.get();
-        return request.getSession().getAttribute(name);
-    }
-
+    
     public String getName(){
         return ScopeType.SESSION.toString();
+    }
+
+    public Object get(String beanName, ObjectFactory factory) {
+        HttpSession session = ((HttpServletRequest)requests.get()).getSession();
+        Object value = session.getAttribute(beanName);
+        if( value == null ){
+            value = factory.getObject();
+            session.setAttribute(beanName, value);
+        }
+        return value;
+    }
+
+    public void remove(String name) {
+        HttpSession session = ((HttpServletRequest)requests.get()).getSession();
+        session.removeAttribute(name);
     }
 
 }

@@ -110,16 +110,24 @@ public class TestHelper {
             this.data = new HashMap<String,Object>();
         }
 
-        public void put(String name, Object value) {
-            data.put( name, value );
-        }
-
-        public Object get(String name) {
-            return data.get( name );
-        }
-
         public String getName(){
             return "customScope";
+        }
+
+        public Object get(String beanName, ObjectFactory factory) {
+
+            if( data.containsKey(beanName) )
+                return data.get(beanName);
+            else{
+                Object value = factory.getObject();
+                data.put( beanName, value );
+                return value;
+            }
+
+        }
+
+        public void remove(String name) {
+            data.remove(name);
         }
 
     }

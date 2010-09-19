@@ -17,7 +17,7 @@
 package org.brandao.ioc.scope;
 
 import javax.servlet.ServletRequest;
-import org.brandao.ioc.IOCException;
+import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
 
@@ -33,18 +33,23 @@ public class RequestScope implements Scope{
         this.requests = requests;
     }
 
-    public void put(String name, Object value) {
-        ServletRequest request = requests.get();
-        request.setAttribute(name, value);
-    }
-
-    public Object get(String name) {
-        ServletRequest request = requests.get();
-        return request.getAttribute(name);
-    }
-
     public String getName(){
         return ScopeType.REQUEST.toString();
+    }
+
+    public Object get(String beanName, ObjectFactory factory) {
+        ServletRequest request = requests.get();
+        Object value = request.getAttribute(beanName);
+        if( value == null ){
+            value = factory.getObject();
+            request.setAttribute(beanName, value);
+        }
+        return value;
+    }
+
+    public void remove(String name) {
+        ServletRequest request = requests.get();
+        request.removeAttribute(name);
     }
 
 }

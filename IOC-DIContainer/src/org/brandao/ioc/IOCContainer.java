@@ -20,9 +20,7 @@ package org.brandao.ioc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.brandao.ioc.bean.BeanInstance;
 import org.brandao.ioc.bean.SetterProperty;
 import org.brandao.ioc.mapping.ClassType;
@@ -36,7 +34,7 @@ public class IOCContainer {
 
     private ScopeManager scopeManager;
     private IOCContainer parent;
-    private Map<Object, Injectable> beanDefinitions;
+    //private Map<Object, Injectable> beanDefinitions;
     private BeanFactory beanFactory;
     private static long id = 0;
     private boolean autoDefinition;
@@ -44,8 +42,8 @@ public class IOCContainer {
     public IOCContainer( ScopeManager scopeManager, IOCContainer parent ){
         this.scopeManager = scopeManager;
         this.parent = parent;
-        this.beanDefinitions = new HashMap<Object, Injectable>();
-        this.beanFactory = new BeanFactory( this, scopeManager );
+        //this.beanDefinitions = new HashMap<Object, Injectable>();
+        this.beanFactory = new DefaultBeanFactory( this );
     }
 
 
@@ -116,16 +114,15 @@ public class IOCContainer {
     }
 
     protected void removeBeanDefinition( String name ){
-        beanDefinitions.remove(name);
+        ((MutableBeanFactory)beanFactory).removeBeanDefinition(name);
     }
 
     protected Injectable getBeanDefinition( String name ){
-        return beanDefinitions.get(name);
+        return ((MutableBeanFactory)beanFactory).getBeanDefinition(name);
     }
 
     protected void addBeanDefinition( Injectable inject ){
-        beanDefinitions.put(inject.getName(),inject);
-        beanDefinitions.put(ClassType.getWrapper( inject.getTarget() ),inject);
+        ((MutableBeanFactory)beanFactory).addBeanDefinition(inject);
     }
 
     public Object getBean( Class clazz ){
@@ -133,9 +130,23 @@ public class IOCContainer {
     }
 
     public Object getBean( Object key ){
-        key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
+        /*key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
         if( beanDefinitions.containsKey(key) )
             return beanFactory.getInstance(beanDefinitions.get(key));
+        else
+        if( parent != null && parent.contains(key) )
+            return parent.getBean(key);
+        else
+        if( isAutoDefinition() && key instanceof Class ){
+            createDefinition( (Class)key );
+            return getBean( key );
+        }
+        else
+            throw new BeanNotFoundException(String.valueOf(key));
+        */
+        key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
+        if( beanFactory.contains(key) )
+            return beanFactory.getBean(key);
         else
         if( parent != null && parent.contains(key) )
             return parent.getBean(key);
@@ -150,7 +161,8 @@ public class IOCContainer {
 
     public boolean contains( Object key ){
         key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
-        boolean exist = beanDefinitions.containsKey(key);
+
+        boolean exist = beanFactory.contains(key);
         
         if( !exist && parent != null )
             exist = parent.contains(key);
