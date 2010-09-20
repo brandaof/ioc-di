@@ -20,6 +20,7 @@ package org.brandao.ioc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import org.brandao.ioc.bean.BeanInstance;
 import org.brandao.ioc.bean.SetterProperty;
@@ -37,7 +38,8 @@ public class IOCContainer {
     //private Map<Object, Injectable> beanDefinitions;
     private BeanFactory beanFactory;
     private static long id = 0;
-    private boolean autoDefinition;
+    private boolean autoDefinitionConstructor;
+    private boolean autoDefinitionProperty;
 
     public IOCContainer( ScopeManager scopeManager, IOCContainer parent ){
         this.scopeManager = scopeManager;
@@ -114,15 +116,23 @@ public class IOCContainer {
     }
 
     protected void removeBeanDefinition( String name ){
-        ((MutableBeanFactory)beanFactory).removeBeanDefinition(name);
+        ((MutableBeanFactory)getBeanFactory()).removeBeanDefinition(name);
     }
 
-    protected Injectable getBeanDefinition( String name ){
-        return ((MutableBeanFactory)beanFactory).getBeanDefinition(name);
+    protected Injectable getBeanDefinition( Object key ){
+        key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
+        
+        if(getBeanFactory().contains(key))
+            return ((MutableBeanFactory)getBeanFactory()).getBeanDefinition(key);
+        else
+        if( parent != null )
+            return parent.getBeanDefinition(key);
+        else
+            return null;
     }
 
     protected void addBeanDefinition( Injectable inject ){
-        ((MutableBeanFactory)beanFactory).addBeanDefinition(inject);
+        ((MutableBeanFactory)getBeanFactory()).addBeanDefinition(inject);
     }
 
     public Object getBean( Class clazz ){
@@ -145,13 +155,14 @@ public class IOCContainer {
             throw new BeanNotFoundException(String.valueOf(key));
         */
         key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
-        if( beanFactory.contains(key) )
-            return beanFactory.getBean(key);
+        if( getBeanFactory().contains(key) )
+            return getBeanFactory().getBean(key);
         else
         if( parent != null && parent.contains(key) )
             return parent.getBean(key);
         else
-        if( isAutoDefinition() && key instanceof Class ){
+        if( (isAutoDefinitionConstructor() || isAutoDefinitionProperty())
+                    && key instanceof Class ){
             createDefinition( (Class)key );
             return getBean( key );
         }
@@ -162,7 +173,7 @@ public class IOCContainer {
     public boolean contains( Object key ){
         key = key instanceof Class? ClassType.getWrapper((Class)key) : key;
 
-        boolean exist = beanFactory.contains(key);
+        boolean exist = getBeanFactory().contains(key);
         
         if( !exist && parent != null )
             exist = parent.contains(key);
@@ -177,42 +188,104 @@ public class IOCContainer {
 
         BeanBuilder builder = addBean(clazz);
 
-        Constructor c = cons[0];
-        Class[] params = c.getParameterTypes();
+        if( this.isAutoDefinitionConstructor() ){
+            Constructor c = getConstructor( cons );
+            Class[] params = c.getParameterTypes();
 
-        for( Class param: params ){
-            if( !contains(param) )
-                createDefinition( param );
+            for( Class param: params ){
+                if( !contains(param) )
+                    createDefinition( param );
 
-            builder.addConstructiorArg();
+                Injectable ref = this.getBeanDefinition(param);
+                    //((MutableBeanFactory)beanFactory).getBeanDefinition(ClassType.getWrapper(param));
+                builder.addConstructiorRefArg( ref.getName() );
+            }
         }
 
-        BeanInstance instance = new BeanInstance(null,clazz);
-        List<SetterProperty> sets = instance.getSetters();
-        for( SetterProperty set: sets ){
-            Method method = set.getMethod();
 
-            Class param = method.getParameterTypes()[0];
+        if( this.isAutoDefinitionProperty() ){
+            BeanInstance instance = new BeanInstance(null,clazz);
+            List<SetterProperty> sets = instance.getSetters();
+            for( SetterProperty set: sets ){
+                Method method = set.getMethod();
 
-            if( !contains(param) )
-                createDefinition( param );
+                Class param = method.getParameterTypes()[0];
 
-            String methodName = method.getName();
-            String id = methodName
-                    .substring(3,methodName.length());
+                if( !contains(param) )
+                    createDefinition( param );
 
-            id = Character.toLowerCase( id.charAt(0) ) +
-                    id.substring(1, id.length() );
+                String methodName = method.getName();
+                String id = methodName
+                        .substring(3,methodName.length());
 
-            builder.addProperty(id);
+                id = Character.toLowerCase( id.charAt(0) ) +
+                        id.substring(1, id.length() );
+
+                builder.addProperty(id);
+            }
         }
     }
 
-    public boolean isAutoDefinition() {
-        return autoDefinition;
+    protected Constructor getConstructor( Constructor[] cons ){
+
+        Constructor noArgs = null;
+
+        List<Constructor> list = new ArrayList<Constructor>();
+
+        for( Constructor c: cons ){
+
+            if( c.getParameterTypes().length == 0 )
+                noArgs = c;
+            else{
+                boolean ok = true;
+                for( Class param: c.getParameterTypes()  ){
+                    if( !contains( param ) ){
+                        ok = false;
+                        break;
+                    }
+                }
+
+                if( ok )
+                    list.add( c );
+            }
+        }
+
+        if( list.size() != 0 ){
+            Constructor r = null;
+            for( Constructor c: list ){
+                if( r == null ||
+                    r.getParameterTypes().length<c.getParameterTypes().length )
+                    r = c;
+            }
+            return r;
+        }
+        else
+        if( noArgs != null )
+            return noArgs;
+        else
+            return cons[0];
+        
+
     }
 
-    public void setAutoDefinition(boolean autoDefinition) {
-        this.autoDefinition = autoDefinition;
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
+
+    public boolean isAutoDefinitionConstructor() {
+        return autoDefinitionConstructor;
+    }
+
+    public void setAutoDefinitionConstructor(boolean autoDefinitionConstructor) {
+        this.autoDefinitionConstructor = autoDefinitionConstructor;
+    }
+
+    public boolean isAutoDefinitionProperty() {
+        return autoDefinitionProperty;
+    }
+
+    public void setAutoDefinitionProperty(boolean autoDefinitionProperty) {
+        this.autoDefinitionProperty = autoDefinitionProperty;
+    }
+
 }

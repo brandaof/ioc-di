@@ -20,6 +20,7 @@ package org.brandao.ioc;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
+import java.text.DateFormatSymbols;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import junit.framework.TestCase;
@@ -347,7 +348,8 @@ public class IOCContainerTest extends TestCase{
         iocContainer.addBean(Integer.class)
                 .addConstructiorArg( 100 );
 
-        iocContainer.setAutoDefinition(true);
+        iocContainer.setAutoDefinitionProperty(true);
+        iocContainer.setAutoDefinitionConstructor(true);
         MyBeanByContructor instance = (MyBeanByContructor) iocContainer.getBean(MyBeanByContructor.class);
         assertNotNull( instance );
         assertEquals( "Texto...", instance.getStringValue() );
@@ -355,4 +357,14 @@ public class IOCContainerTest extends TestCase{
         assertNotNull( instance.getBean() );
     }
 
+    public void testCoCConstructor(){
+        IOCContainer iocContainer = new IOCContainer();
+        iocContainer.addBean(String.class)
+                .addConstructiorArg("dd/MM/yyy");
+        
+        iocContainer.addBean(DateFormatSymbols.class);
+
+        iocContainer.setAutoDefinitionConstructor(true);
+        Object o = iocContainer.getBean(java.text.SimpleDateFormat.class);
+    }
 }
