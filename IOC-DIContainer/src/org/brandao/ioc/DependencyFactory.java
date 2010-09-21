@@ -17,22 +17,18 @@
 
 package org.brandao.ioc;
 
+import org.brandao.ioc.mapping.Injectable;
+
 /**
  *
  * @author Afonso Brandao
  */
-public interface BeanFactory {
+public interface DependencyFactory {
 
-    public Object getBean( Object key );
+    public Injectable createDependency( Class clazz );
 
-    public boolean contains( Object key );
+    public void setDependencyResolver( DepedencyResolver resolver );
 
-    public Class getType( Object key );
-
-    public boolean isPrototype( Object key );
-
-    public boolean isSingleton( Object key );
-
-    public boolean isScoped( Object key, ScopeType scope );
+    public DepedencyResolver getDependencyResolver();
     
 }

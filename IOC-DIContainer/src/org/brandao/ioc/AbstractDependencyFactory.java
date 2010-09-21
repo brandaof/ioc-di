@@ -1,7 +1,7 @@
 /*
  * IOC-DI Container http://ioc-di.sourceforge.net/
  * Copyright (C) 2010 Afonso Brandao. (afonso.rbn@gmail.com)
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,18 +21,16 @@ package org.brandao.ioc;
  *
  * @author Afonso Brandao
  */
-public interface BeanFactory {
+public abstract class AbstractDependencyFactory implements DependencyFactory{
 
-    public Object getBean( Object key );
+    private DepedencyResolver dependencyResolver;
 
-    public boolean contains( Object key );
+    public DepedencyResolver getDependencyResolver() {
+        return dependencyResolver;
+    }
 
-    public Class getType( Object key );
+    public void setDependencyResolver(DepedencyResolver dependencyResolver) {
+        this.dependencyResolver = dependencyResolver;
+    }
 
-    public boolean isPrototype( Object key );
-
-    public boolean isSingleton( Object key );
-
-    public boolean isScoped( Object key, ScopeType scope );
-    
 }

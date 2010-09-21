@@ -15,24 +15,32 @@
  *  limitations under the License.
  */
 
+
 package org.brandao.ioc;
+
+import java.lang.reflect.Constructor;
+import org.brandao.ioc.mapping.Injectable;
 
 /**
  *
  * @author Afonso Brandao
  */
-public interface BeanFactory {
+public interface DepedencyResolver {
 
-    public Object getBean( Object key );
+    public boolean isCreateDependecyConstructor();
 
-    public boolean contains( Object key );
+    public boolean isCreateDependecyProperty();
 
-    public Class getType( Object key );
+    public void setCreateDependecyConstructor( boolean value );
 
-    public boolean isPrototype( Object key );
+    public void setCreateDependecyProperty( boolean value );
 
-    public boolean isSingleton( Object key );
+    public Injectable[] getAppropriateConstructor( Constructor[] constructors );
 
-    public boolean isScoped( Object key, ScopeType scope );
-    
+    public Injectable getAppropriateProperty( Class propertyType );
+
+    public void setDependencyFactory( DependencyFactory dependencyFactory );
+
+    public DependencyFactory getDependencyFactory();
+
 }

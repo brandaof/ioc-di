@@ -1,18 +1,18 @@
 /*
  * IOC-DI Container http://ioc-di.sourceforge.net/
- * Copyright (C) 2009 Afonso Brandao. (afonso.rbn@gmail.com)
+ * Copyright (C) 2010 Afonso Brandao. (afonso.rbn@gmail.com)
  *
- * This library is free software. You can redistribute it
- * and/or modify it under the terms of the GNU General Public
- * License (GPL) version 3.0 or (at your option) any later
- * version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.gnu.org/licenses/gpl.html
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
- * Distributed WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
- * either express or implied.
- *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package org.brandao.ioc;
@@ -21,6 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.brandao.ioc.mapping.ClassType;
 import org.brandao.ioc.mapping.ConstructorInject;
 import org.brandao.ioc.mapping.GenericValueInject;
 import org.brandao.ioc.mapping.Injectable;
@@ -58,7 +59,7 @@ public class DefaultObjectFactory implements ObjectFactory{
                     if( arg instanceof GenericValueInject ){
                         value = container.contains( prop.getName() )?
                                     container.getBean( prop.getName() ) :
-                                    container.getBean( prop.getMethod().getParameterTypes()[0] );
+                                    container.getBean( ClassType.getWrapper(prop.getMethod().getParameterTypes()[0]) );
                     }
                     else
                         value = container.getBean( arg.getName() );
@@ -111,7 +112,7 @@ public class DefaultObjectFactory implements ObjectFactory{
                 values[i] = getValueInject( (ValueInject)arg );
             else
             if( arg instanceof GenericValueInject )
-                values[i] = container.getBean( arg.getTarget() );
+                values[i] = container.getBean( ClassType.getWrapper(arg.getTarget()) );
             else
                 values[i] = container.getBean( arg.getName() );
         }
