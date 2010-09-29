@@ -18,6 +18,7 @@
 
 package org.brandao.ioc.scope;
 
+import org.brandao.ioc.Discartedbean;
 import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
@@ -41,6 +42,9 @@ public class ProtoTypeScope implements Scope{
     }
 
     public void remove(String name) {
+    }
+
+    public void registerDestructionCallback(String beanName, Discartedbean callback) {
     }
     
 }

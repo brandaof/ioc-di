@@ -20,6 +20,7 @@ package org.brandao.ioc.scope;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.brandao.ioc.Discartedbean;
 import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
@@ -74,6 +75,9 @@ public class SingletonScope implements Scope{
 
     public void remove(String name) {
         data.remove(name);
+    }
+
+    public void registerDestructionCallback(String beanName, Discartedbean callback) {
     }
 
 }

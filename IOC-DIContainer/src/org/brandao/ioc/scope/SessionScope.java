@@ -19,9 +19,11 @@ package org.brandao.ioc.scope;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.brandao.ioc.Discartedbean;
 import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
+import org.brandao.ioc.web.SessionDestructionCallBackSupport;
 
 /**
  *
@@ -52,6 +54,12 @@ public class SessionScope implements Scope{
     public void remove(String name) {
         HttpSession session = ((HttpServletRequest)requests.get()).getSession();
         session.removeAttribute(name);
+    }
+
+    public void registerDestructionCallback(String beanName, Discartedbean callback) {
+        HttpSession session = ((HttpServletRequest)requests.get()).getSession();
+        SessionDestructionCallBackSupport.get(session)
+                .registerDestructionCallBack(beanName, callback);
     }
 
 }

@@ -17,18 +17,24 @@
 
 package org.brandao.ioc;
 
+import org.brandao.ioc.mapping.Injectable;
+
 /**
  *
  * @author Afonso Brandao
  */
-public interface Scope {
+public class DefaultDiscartedbean implements Discartedbean{
 
-    public Object get( String beanName, ObjectFactory factory );
+    private Object bean;
+    private Injectable beanDefinition;
+
+    public DefaultDiscartedbean( Injectable beanDefinition, Object bean ){
+        this.bean = bean;
+        this.beanDefinition = beanDefinition;
+    }
     
-    public String getName();
-
-    public void remove( String name );
-
-    public void registerDestructionCallback( String beanName, Discartedbean callback );
+    public void destroy(){
+        
+    }
     
 }

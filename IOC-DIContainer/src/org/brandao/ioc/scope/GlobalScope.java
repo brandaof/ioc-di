@@ -18,9 +18,11 @@
 package org.brandao.ioc.scope;
 
 import javax.servlet.ServletContext;
+import org.brandao.ioc.Discartedbean;
 import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
+import org.brandao.ioc.web.GlobalDestructionCallBackSupport;
 
 /**
  *
@@ -49,6 +51,13 @@ public class GlobalScope implements Scope{
 
     public void remove(String name) {
         context.removeAttribute(name);
+    }
+
+    public void registerDestructionCallback(String beanName, Discartedbean callback) {
+        GlobalDestructionCallBackSupport rdc =
+                GlobalDestructionCallBackSupport.get();
+
+        rdc.registerDestructionCallBack(beanName, callback);
     }
 
 }

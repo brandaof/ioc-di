@@ -21,14 +21,8 @@ package org.brandao.ioc;
  *
  * @author Afonso Brandao
  */
-public interface Scope {
+public interface Discartedbean {
 
-    public Object get( String beanName, ObjectFactory factory );
-    
-    public String getName();
-
-    public void remove( String name );
-
-    public void registerDestructionCallback( String beanName, Discartedbean callback );
+    public void destroy();
     
 }

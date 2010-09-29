@@ -17,9 +17,11 @@
 package org.brandao.ioc.scope;
 
 import javax.servlet.ServletRequest;
+import org.brandao.ioc.Discartedbean;
 import org.brandao.ioc.ObjectFactory;
 import org.brandao.ioc.Scope;
 import org.brandao.ioc.ScopeType;
+import org.brandao.ioc.web.RequestDestructionCallBackSupport;
 
 /**
  *
@@ -50,6 +52,14 @@ public class RequestScope implements Scope{
     public void remove(String name) {
         ServletRequest request = requests.get();
         request.removeAttribute(name);
+    }
+
+    public void registerDestructionCallback(String beanName, Discartedbean callback) {
+        RequestDestructionCallBackSupport rdc =
+                RequestDestructionCallBackSupport
+                    .get();
+
+        rdc.registerDestructionCallBack(beanName, callback);
     }
 
 }

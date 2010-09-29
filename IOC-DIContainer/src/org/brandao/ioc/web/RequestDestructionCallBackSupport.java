@@ -15,20 +15,31 @@
  * limitations under the License.
  */
 
-package org.brandao.ioc;
+package org.brandao.ioc.web;
+
+import org.brandao.ioc.DestructionCallBackSupport;
 
 /**
  *
  * @author Afonso Brandao
  */
-public interface Scope {
+public class RequestDestructionCallBackSupport extends DestructionCallBackSupport{
 
-    public Object get( String beanName, ObjectFactory factory );
+    private static ThreadLocal requestDestruction;
+
+    public RequestDestructionCallBackSupport(){
+        super();
+    }
+
+    public static RequestDestructionCallBackSupport get(){
+        return (RequestDestructionCallBackSupport) requestDestruction.get();
+    }
     
-    public String getName();
+    public static void set(){
+        requestDestruction.set( new RequestDestructionCallBackSupport() );
+    }
 
-    public void remove( String name );
-
-    public void registerDestructionCallback( String beanName, Discartedbean callback );
-    
+    public static void remove(){
+        requestDestruction.remove();
+    }
 }

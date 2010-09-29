@@ -17,9 +17,13 @@
 
 package org.brandao.ioc.web;
 
+import java.util.Map;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import org.brandao.ioc.DestructionCallBackSupport;
 import org.brandao.ioc.RootContainer;
 import org.brandao.ioc.ScopeType;
 import org.brandao.ioc.scope.RequestScope;
@@ -29,25 +33,50 @@ import org.brandao.ioc.scope.SessionScope;
  *
  * @author Afonso Brandao
  */
-public class RequestContextListener implements ServletRequestListener{
+public class RequestContextListener implements ServletRequestListener, HttpSessionListener{
 
     private ThreadLocal<ServletRequest> requests;
 
     public RequestContextListener(){
         this.requests = new ThreadLocal<ServletRequest>();
         RootContainer container = RootContainer.getInstance();
-        RequestScope scope = new RequestScope( requests );
-        SessionScope scope2 = new SessionScope( requests );
-        container.getScopeManager().register(ScopeType.REQUEST.toString(), scope);
-        container.getScopeManager().register(ScopeType.SESSION.toString(), scope2);
+        RequestScope requestScope = new RequestScope( requests );
+        SessionScope sessionScope = new SessionScope( requests );
+        container.getScopeManager().register(ScopeType.REQUEST.toString(), requestScope);
+        container.getScopeManager().register(ScopeType.SESSION.toString(), sessionScope);
     }
     
     public void requestDestroyed(ServletRequestEvent arg0) {
-        requests.remove();
+        try{
+            DestructionCallBackSupport currentDequestDestruction =
+                    RequestDestructionCallBackSupport.get();
+            currentDequestDestruction.destroyAll();
+        }
+        finally{
+            requests.remove();
+            RequestDestructionCallBackSupport.remove();
+        }
+
     }
 
     public void requestInitialized(ServletRequestEvent arg0) {
         requests.set(arg0.getServletRequest());
+        RequestDestructionCallBackSupport.set();
+    }
+
+    public void sessionCreated(HttpSessionEvent arg0) {
+        SessionDestructionCallBackSupport.set(arg0.getSession());
+    }
+
+    public void sessionDestroyed(HttpSessionEvent arg0) {
+        try{
+            DestructionCallBackSupport currentDequestDestruction =
+                    SessionDestructionCallBackSupport.get(arg0.getSession());
+            currentDequestDestruction.destroyAll();
+        }
+        finally{
+            SessionDestructionCallBackSupport.remove( arg0.getSession() );
+        }
     }
 
 }
