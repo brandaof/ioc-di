@@ -25,7 +25,7 @@ import org.brandao.ioc.DestructionCallBackSupport;
  */
 public class RequestDestructionCallBackSupport extends DestructionCallBackSupport{
 
-    private static ThreadLocal requestDestruction;
+    private static ThreadLocal requestDestruction = new ThreadLocal();
 
     public RequestDestructionCallBackSupport(){
         super();

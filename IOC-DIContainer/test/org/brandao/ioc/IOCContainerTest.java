@@ -23,6 +23,8 @@ import com.mockrunner.mock.web.MockServletContext;
 import java.text.DateFormatSymbols;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
 import junit.framework.TestCase;
 import org.brandao.ioc.TestHelper.CustomScope;
 import org.brandao.ioc.TestHelper.MyBean;
@@ -49,7 +51,7 @@ public class IOCContainerTest extends TestCase{
         IOCContainer iocContainer = new IOCContainer();
         iocContainer
             .addBean(MyBean.class)
-                .addConstructiorArg(MySimpleBean.class);
+                .addConstructorArg(MySimpleBean.class);
 
         MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
         assertNotNull( instance );
@@ -60,18 +62,18 @@ public class IOCContainerTest extends TestCase{
         IOCContainer iocContainer = new IOCContainer();
 
         iocContainer.addBean(String.class)
-                .addConstructiorArg( "Texto..." );
+                .addConstructorArg( "Texto..." );
 
         iocContainer.addBean(Integer.class)
-                .addConstructiorArg( 100 );
+                .addConstructorArg( 100 );
 
         iocContainer.addBean("myBean", MySimpleBean.class, ScopeType.SINGLETON );
 
         iocContainer
             .addBean(MyBeanByContructor.class)
-                .addConstructiorArg()
-                .addConstructiorArg()
-                .addConstructiorArg();
+                .addConstructorArg()
+                .addConstructorArg()
+                .addConstructorArg();
 
         MyBeanByContructor instance = (MyBeanByContructor) iocContainer.getBean(MyBeanByContructor.class);
         assertNotNull( instance );
@@ -88,7 +90,7 @@ public class IOCContainerTest extends TestCase{
 
         iocContainer
             .addBean(MyBean.class)
-                .addConstructiorRefArg(MySimpleBean.class.getName());
+                .addConstructorRefArg(MySimpleBean.class.getName());
 
         MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
         assertNotNull( instance );
@@ -126,7 +128,7 @@ public class IOCContainerTest extends TestCase{
 
         iocContainer
             .addBean(MyEnum.class)
-                .addConstructiorArg("VALUE2")
+                .addConstructorArg("VALUE2")
                 .setFactoryMethod("valueOf");
 
         MyEnum instance = (MyEnum) iocContainer.getBean(MyEnum.class);
@@ -232,10 +234,13 @@ public class IOCContainerTest extends TestCase{
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpSession session = new MockHttpSession();
             ServletRequestEvent sre = new ServletRequestEvent(servletContext, request);
+            HttpSessionEvent sessionEvent = new HttpSessionEvent( (HttpSession)session );
+
             request.setSession(session);
 
             try{
                 requestListener.requestInitialized(sre);
+                requestListener.sessionCreated(sessionEvent);
                 IOCContainer iocContainer = new IOCContainer();
                 iocContainer
                 .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.SESSION);
@@ -247,6 +252,7 @@ public class IOCContainerTest extends TestCase{
             }
             finally{
                 requestListener.requestDestroyed(sre);
+                requestListener.sessionDestroyed(sessionEvent);
             }
         }
         finally{
@@ -317,7 +323,7 @@ public class IOCContainerTest extends TestCase{
             .addBean("bean",MySimpleBean.class);
 
         iocContainer
-            .addBean(MyBean.class).addConstructiorArg();
+            .addBean(MyBean.class).addConstructorArg();
 
         MyBean instance = (MyBean) iocContainer.getBean(MyBean.class);
         assertNotNull( instance );
@@ -328,11 +334,11 @@ public class IOCContainerTest extends TestCase{
         IOCContainer iocContainer = new IOCContainer();
 
         iocContainer.addBean("myEnumId", String.class)
-                .addConstructiorArg("VALUE2");
+                .addConstructorArg("VALUE2");
         
         iocContainer
             .addBean(MyEnum.class)
-                .addConstructiorArg()
+                .addConstructorArg()
                 .setFactoryMethod("valueOf");
 
         MyEnum instance = (MyEnum) iocContainer.getBean(MyEnum.class);
@@ -343,10 +349,10 @@ public class IOCContainerTest extends TestCase{
         IOCContainer iocContainer = new IOCContainer();
 
         iocContainer.addBean(String.class)
-                .addConstructiorArg( "Texto..." );
+                .addConstructorArg( "Texto..." );
 
         iocContainer.addBean(Integer.class)
-                .addConstructiorArg( 100 );
+                .addConstructorArg( 100 );
 
         iocContainer.setAutoDefinitionProperty(true);
         iocContainer.setAutoDefinitionConstructor(true);
@@ -360,7 +366,7 @@ public class IOCContainerTest extends TestCase{
     public void testCoCConstructor(){
         IOCContainer iocContainer = new IOCContainer();
         iocContainer.addBean(String.class)
-                .addConstructiorArg("dd/MM/yyy");
+                .addConstructorArg("dd/MM/yyy");
         
         iocContainer.addBean(DateFormatSymbols.class);
 

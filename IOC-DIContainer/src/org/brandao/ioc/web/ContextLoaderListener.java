@@ -19,6 +19,7 @@ package org.brandao.ioc.web;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import org.brandao.ioc.DestructionCallBackSupport;
 import org.brandao.ioc.RootContainer;
 import org.brandao.ioc.ScopeType;
 import org.brandao.ioc.scope.GlobalScope;
@@ -33,11 +34,21 @@ public class ContextLoaderListener implements ServletContextListener{
         RootContainer container = RootContainer.getInstance();
         GlobalScope scope = new GlobalScope( arg0.getServletContext() );
         container.getScopeManager().register(ScopeType.GLOBAL.toString(), scope);
+        GlobalDestructionCallBackSupport.set();
     }
 
     public void contextDestroyed(ServletContextEvent arg0) {
         RootContainer container = RootContainer.getInstance();
         container.getScopeManager().remove(ScopeType.GLOBAL.toString());
+        try{
+            DestructionCallBackSupport currentDequestDestruction =
+                    GlobalDestructionCallBackSupport.get();
+            currentDequestDestruction.destroyAll();
+        }
+        finally{
+            GlobalDestructionCallBackSupport.remove();
+        }
+
     }
 
 }

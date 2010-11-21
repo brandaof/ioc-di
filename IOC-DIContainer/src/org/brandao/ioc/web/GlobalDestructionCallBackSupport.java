@@ -38,4 +38,9 @@ public class GlobalDestructionCallBackSupport extends DestructionCallBackSupport
     public static void set(){
         instance = new GlobalDestructionCallBackSupport();
     }
+
+    public static void remove(){
+        instance = null;
+    }
+
 }

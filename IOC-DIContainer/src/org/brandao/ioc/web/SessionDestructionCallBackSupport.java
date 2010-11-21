@@ -17,6 +17,7 @@
 
 package org.brandao.ioc.web;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.brandao.ioc.DestructionCallBackSupport;
@@ -27,7 +28,7 @@ import org.brandao.ioc.DestructionCallBackSupport;
  */
 public class SessionDestructionCallBackSupport extends DestructionCallBackSupport{
 
-    private static Map destruction;
+    private static Map destruction = new HashMap();
 
     public SessionDestructionCallBackSupport(){
         super();

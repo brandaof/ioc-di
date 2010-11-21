@@ -42,56 +42,56 @@ public class BeanBuilder extends Injectable{
 
     }
 
-    public BeanBuilder addConstructiorArg( Object value, Class<?> type ){
+    public BeanBuilder addConstructorArg( Object value, Class<?> type ){
         getConstructor().addArg( new ValueInject( type, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( Object value ){
-        return addConstructiorArg( value, value == null? null : value.getClass() );
+    public BeanBuilder addConstructorArg( Object value ){
+        return addConstructorArg( value, value == null? null : value.getClass() );
     }
 
-    public BeanBuilder addConstructiorArg( boolean value ){
+    public BeanBuilder addConstructorArg( boolean value ){
         getConstructor().addArg( new ValueInject(boolean.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( byte value ){
+    public BeanBuilder addConstructorArg( byte value ){
         getConstructor().addArg( new ValueInject( byte.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( char value ){
+    public BeanBuilder addConstructorArg( char value ){
         getConstructor().addArg( new ValueInject( char.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( double value ){
+    public BeanBuilder addConstructorArg( double value ){
         getConstructor().addArg( new ValueInject( double.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( float value ){
+    public BeanBuilder addConstructorArg( float value ){
         getConstructor().addArg( new ValueInject( float.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( int value ){
+    public BeanBuilder addConstructorArg( int value ){
         getConstructor().addArg( new ValueInject( int.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( long value ){
+    public BeanBuilder addConstructorArg( long value ){
         getConstructor().addArg( new ValueInject( long.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg( short value ){
+    public BeanBuilder addConstructorArg( short value ){
         getConstructor().addArg( new ValueInject( short.class, value ) );
         return this;
     }
 
-    public BeanBuilder addConstructiorArg(){
+    public BeanBuilder addConstructorArg(){
         getConstructor().addArg( new GenericValueInject() );
         return this;
     }
@@ -106,14 +106,14 @@ public class BeanBuilder extends Injectable{
         return this;
     }
 
-    public BeanBuilder addConstructiorArg(Class clazz){
+    public BeanBuilder addConstructorArg(Class clazz){
         String name = IOCContainer.getNextId()+"#Bean";
         BeanBuilder beanBuilder = container.addBean(name, clazz);
-        addConstructiorRefArg( name );
+        addConstructorRefArg( name );
         return beanBuilder;
     }
 
-    public BeanBuilder addConstructiorRefArg( String ref ){
+    public BeanBuilder addConstructorRefArg( String ref ){
         BeanBuilder refBean = (BeanBuilder) container.getBeanDefinition( ref );
 
         if( refBean == null )

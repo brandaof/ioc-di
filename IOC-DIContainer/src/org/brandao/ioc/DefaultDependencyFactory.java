@@ -59,7 +59,7 @@ public class DefaultDependencyFactory extends AbstractDependencyFactory{
                         "can not found constructor: " + clazz.getName() );
 
             for( Injectable arg: args )
-                builder.addConstructiorRefArg( arg.getName() );
+                builder.addConstructorRefArg( arg.getName() );
 
         }
 

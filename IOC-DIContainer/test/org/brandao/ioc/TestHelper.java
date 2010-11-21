@@ -130,5 +130,8 @@ public class TestHelper {
             data.remove(name);
         }
 
+        public void registerDestructionCallback(String beanName, Discartedbean callback) {
+        }
+
     }
 }

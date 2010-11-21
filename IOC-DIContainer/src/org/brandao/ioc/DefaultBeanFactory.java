@@ -49,7 +49,10 @@ public class DefaultBeanFactory implements BeanFactory, MutableBeanFactory{
         Injectable beanDefinition = beanDefinitions.get(key);
         
         ScopeManager scopeManager = container.getScopeManager();
-        Scope scope = scopeManager.get( beanDefinition.getScope().toString() );
+        Scope scope = scopeManager.get( 
+                        beanDefinition.isSingleton()?
+                            ScopeType.SINGLETON.toString() :
+                            beanDefinition.getScope().toString() );
 
         Object objectScoped = 
                 scope.get(
