@@ -59,8 +59,13 @@ public class DefaultBeanFactory implements BeanFactory, MutableBeanFactory{
                     beanDefinition.getName(),
                     new DefaultObjectFactory( container, beanDefinition ) );
 
-        scope.registerDestructionCallback(beanDefinition.getName(), 
-                new DefaultDiscartedbean( beanDefinition, objectScoped ));
+        DiscartedbeanFactory discartedFactory =
+                contains("discartedBeanFactory")?
+                    (DiscartedbeanFactory)getBean( "discartedBeanFactory" ) :
+                    new DefaultDiscartedbeanFactory();
+
+        scope.registerDestructionCallback(beanDefinition.getName(),
+                discartedFactory.getDiscartedbean(beanDefinition, objectScoped));
         
         return objectScoped;
         

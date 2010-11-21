@@ -40,6 +40,10 @@ public class Injectable {
     private List<PropertyInject> properties;
     
     private String factory;
+
+    private String initMethod;
+
+    private String destroyMethod;
     
     public Injectable() {
     }
@@ -113,5 +117,21 @@ public class Injectable {
 
     protected void setFactoryRef(String factory) {
         this.factory = factory;
+    }
+
+    public String getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(String initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public String getDestroyMethod() {
+        return destroyMethod;
+    }
+
+    public void setDestroyMethod(String destroyMethod) {
+        this.destroyMethod = destroyMethod;
     }
 }
