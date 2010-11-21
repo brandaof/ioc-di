@@ -27,5 +27,6 @@ import org.brandao.ioc.mapping.Injectable;
 public interface DiscartedbeanFactory {
 
     public Discartedbean getDiscartedbean( Injectable beanDefinition, Object bean );
+
     
 }

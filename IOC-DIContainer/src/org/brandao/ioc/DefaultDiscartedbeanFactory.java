@@ -28,4 +28,5 @@ public class DefaultDiscartedbeanFactory implements DiscartedbeanFactory{
         return new DefaultDiscartedbean( beanDefinition, bean );
     }
 
+    
 }
