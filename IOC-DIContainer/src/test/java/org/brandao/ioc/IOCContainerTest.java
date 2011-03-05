@@ -41,13 +41,13 @@ import org.brandao.ioc.web.RequestContextListener;
 public class IOCContainerTest extends TestCase{
 
     public void testSimpleBean(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer.addBean(TestHelper.MySimpleBean.class);
         assertNotNull( iocContainer.getBean(TestHelper.MySimpleBean.class) );
     }
 
     public void testConstructorInject(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer
             .addBean(MyBean.class)
                 .addConstructorArg(MySimpleBean.class);
@@ -58,7 +58,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testConstructorInjectMultipleArgs(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer.addBean(String.class)
                 .addConstructorArg( "Texto..." );
@@ -82,7 +82,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testConstructorInjectRef(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean(MySimpleBean.class);
@@ -97,7 +97,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testPropertyInject(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer
             .addBean(MyBean.class)
                 .addProperty("bean",MySimpleBean.class);
@@ -108,7 +108,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testPropertyInjectRef(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean(MySimpleBean.class);
@@ -136,7 +136,7 @@ public class IOCContainerTest extends TestCase{
     }
     */
     public void testFactory(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean(MyFactory.class);
@@ -158,7 +158,7 @@ public class IOCContainerTest extends TestCase{
 
         try{
             listener.contextInitialized(sce);
-            IOCContainer iocContainer = new IOCContainer();
+            BuilderIOCContainer iocContainer = new BuilderIOCContainer();
             iocContainer
                 .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.GLOBAL);
 
@@ -174,7 +174,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testSingletonScope(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer
             .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.SINGLETON);
 
@@ -184,7 +184,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testPrototypeScope(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer
             .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.PROTOTYPE);
 
@@ -205,7 +205,7 @@ public class IOCContainerTest extends TestCase{
 
             try{
                 requestListener.requestInitialized(sre);
-                IOCContainer iocContainer = new IOCContainer();
+                BuilderIOCContainer iocContainer = new BuilderIOCContainer();
                 iocContainer
                     .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.REQUEST);
 
@@ -241,7 +241,7 @@ public class IOCContainerTest extends TestCase{
             try{
                 requestListener.requestInitialized(sre);
                 requestListener.sessionCreated(sessionEvent);
-                IOCContainer iocContainer = new IOCContainer();
+                BuilderIOCContainer iocContainer = new BuilderIOCContainer();
                 iocContainer
                 .addBean("myBean", TestHelper.MySimpleBean.class, ScopeType.SESSION);
 
@@ -261,19 +261,9 @@ public class IOCContainerTest extends TestCase{
 
     }
 
-    public void testRootContainer(){
-        RootContainer rootContainer = RootContainer.getInstance();
-
-        rootContainer.addBean(TestHelper.MySimpleBean.class);
-
-        IOCContainer iocContainer = new IOCContainer();
-        
-        assertNotNull( iocContainer.getBean(TestHelper.MySimpleBean.class) );
-    }
-
     public void testCustomScope(){
         CustomScope customScope = new CustomScope();
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer.getScopeManager()
                 .register(customScope.getName(), customScope);
 
@@ -287,7 +277,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testPropertyAutoInject(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean("bean",MySimpleBean.class);
@@ -302,7 +292,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testPropertyAutoInjectByType(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean(MySimpleBean.class);
@@ -317,7 +307,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testConstructorArgAutoInject(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer
             .addBean("bean",MySimpleBean.class);
@@ -348,7 +338,7 @@ public class IOCContainerTest extends TestCase{
     */
     
     public void testAutoDefinition(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
 
         iocContainer.addBean(String.class)
                 .addConstructorArg( "Texto..." );
@@ -366,7 +356,7 @@ public class IOCContainerTest extends TestCase{
     }
 
     public void testCoCConstructor(){
-        IOCContainer iocContainer = new IOCContainer();
+        BuilderIOCContainer iocContainer = new BuilderIOCContainer();
         iocContainer.addBean(String.class)
                 .addConstructorArg("dd/MM/yyy");
         

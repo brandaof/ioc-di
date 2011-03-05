@@ -108,7 +108,13 @@ public class BeanBuilder extends Injectable{
 
     public BeanBuilder addConstructorArg(Class clazz){
         String name = IOCContainer.getNextId()+"#Bean";
-        BeanBuilder beanBuilder = container.addBean(name, clazz);
+        BeanBuilder beanBuilder = 
+            container.addBean(name,
+                clazz,
+                ScopeType.PROTOTYPE,
+                false,
+                null);
+        
         addConstructorRefArg( name );
         return beanBuilder;
     }
@@ -125,7 +131,14 @@ public class BeanBuilder extends Injectable{
 
     public BeanBuilder addProperty(String name, Class clazz){
         String beanName = IOCContainer.getNextId()+"#Bean";
-        BeanBuilder beanBuilder = container.addBean(beanName, clazz);
+        BeanBuilder beanBuilder = 
+            container.addBean(
+                beanName,
+                clazz,
+                ScopeType.PROTOTYPE,
+                false,
+                null);
+        
         addPropertyRef( name, beanName );
         return beanBuilder;
     }

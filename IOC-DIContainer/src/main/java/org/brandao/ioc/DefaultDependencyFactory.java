@@ -47,16 +47,21 @@ public class DefaultDependencyFactory extends AbstractDependencyFactory{
     public Injectable createDependency(Class clazz) {
 
         Constructor[] cons = clazz.getConstructors();
-        BeanBuilder builder = container.addBean(clazz);
+        BeanBuilder builder = container.addBean(
+                clazz.getName(),
+                clazz,
+                ScopeType.PROTOTYPE,
+                false,
+                null);
 
         if( getDependencyResolver().isCreateDependecyConstructor() ){
 
             Injectable[] args = getDependencyResolver()
                     .getAppropriateConstructor(cons);
 
-            if( args.length == 0 )
-                throw new IOCException(
-                        "can not found constructor: " + clazz.getName() );
+            //if( args.length == 0 )
+            //    throw new IOCException(
+            //            "can not found constructor: " + clazz.getName() );
 
             for( int i=0;i<args.length;i++ ){
                 Injectable arg = args[i];
