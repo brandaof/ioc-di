@@ -106,7 +106,7 @@ public abstract class IOCContainer {
     }
 
     public Object getBean( Class clazz ){
-        return getBean( (Object)clazz );
+        return getBean( clazz.getName() );
     }
 
     public Object getBean( Object key ){

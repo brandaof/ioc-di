@@ -17,9 +17,6 @@
 
 package org.brandao.ioc;
 
-import org.brandao.ioc.mapping.Injectable;
-
-
 /**
  *
  * @author Brandao
@@ -30,10 +27,18 @@ public class BuilderIOCContainer extends IOCContainer{
         return addBean( clazz.getName(), clazz );
     }
 
+    public BeanBuilder addBean( Class clazz, Class classType ){
+        return addBean(clazz.getName(),classType);
+    }
+    
     public BeanBuilder addBean( String name, Class classType ){
         return addBean( name, classType, ScopeType.PROTOTYPE, false, null );
     }
 
+    public BeanBuilder addBean( Class clazz, Class classType, ScopeType scope ){
+        return addBean( clazz.getName(), classType, scope );
+    }
+    
     public BeanBuilder addBean( String name, Class classType, ScopeType scope ){
         return addBean( name, classType, scope, false, null );
     }
@@ -46,7 +51,8 @@ public class BuilderIOCContainer extends IOCContainer{
         return addBean( name, classType, null, true, null );
     }
 
-    public BeanBuilder addBean( String name, Class classType, ScopeType scope, boolean singleton, String factory ){
+    public BeanBuilder addBean( String name, Class classType, ScopeType scope,
+            boolean singleton, String factory ){
         return super.addBean(name, classType, scope, singleton, factory);
     }
 
