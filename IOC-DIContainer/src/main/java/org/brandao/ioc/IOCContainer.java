@@ -116,16 +116,23 @@ public abstract class IOCContainer {
         if( parent != null && parent.contains(key) )
             return parent.getBean(key);
         else
-        if( (isAutoDefinitionConstructor() || isAutoDefinitionProperty())
-                    && key instanceof Class ){
+        if( (isAutoDefinitionConstructor() || isAutoDefinitionProperty())){
             //createDefinition( (Class)key );
-            getDependencyFactory().createDependency((Class)key);
+            getDependencyFactory().createDependency(getClass(key));
             return getBean( key );
         }
         else
             throw new BeanNotFoundException(String.valueOf(key));
     }
 
+    private Class getClass(Object key){
+        try{
+            return getClass().forName(String.valueOf(key));
+        }
+        catch( Exception e ){
+            throw new IOCException(e);
+        }
+    }
     public boolean contains( Object key ){
 
         boolean exist = getBeanFactory().contains(key);
