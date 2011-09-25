@@ -135,10 +135,11 @@ public abstract class IOCContainer {
     }
     public boolean contains( Object key ){
 
-        boolean exist = getBeanFactory().contains(key);
+        String k = key == null? null : String.valueOf(key);
+        boolean exist = getBeanFactory().contains(k);
         
         if( !exist && parent != null )
-            exist = parent.contains(key);
+            exist = parent.contains(k);
 
         return exist;
     }
