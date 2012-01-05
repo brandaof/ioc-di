@@ -133,6 +133,11 @@ public abstract class IOCContainer {
             throw new IOCException(e);
         }
     }
+
+    public boolean contains( Class key ){
+        return this.contains( key.getName() );
+    }
+
     public boolean contains( Object key ){
 
         //String k = key == null? null : String.valueOf(key);

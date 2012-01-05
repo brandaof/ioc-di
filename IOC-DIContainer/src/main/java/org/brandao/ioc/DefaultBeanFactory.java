@@ -19,6 +19,7 @@
 package org.brandao.ioc;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.brandao.ioc.mapping.ClassType;
 import org.brandao.ioc.mapping.Injectable;
@@ -34,7 +35,7 @@ public class DefaultBeanFactory implements BeanFactory, MutableBeanFactory{
 
     public DefaultBeanFactory( IOCContainer container ){
         this.container = container;
-        this.beanDefinitions = new HashMap();
+        this.beanDefinitions = new LinkedHashMap();
     }
 
     public Injectable getBeanDefinition( Object key ){
