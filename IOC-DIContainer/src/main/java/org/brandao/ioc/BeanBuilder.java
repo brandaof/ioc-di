@@ -35,7 +35,8 @@ public class BeanBuilder extends Injectable{
     private IOCContainer container;
     private BeanInstance beanInstance;
 
-    public BeanBuilder( Class target, String name, ScopeType scope, boolean singleton, String factory, IOCContainer container ) {
+    public BeanBuilder( Class target, String name, ScopeType scope,
+            boolean singleton, String factory, IOCContainer container ) {
         super( target, name, scope, singleton, factory );
         this.container = container;
         this.beanInstance = new BeanInstance( null, target );
@@ -273,6 +274,16 @@ public class BeanBuilder extends Injectable{
 
     public BeanBuilder addProperty( String name ){
         addProperty(name, new GenericValueInject());
+        return this;
+    }
+
+    public BeanBuilder initMethod(String name){
+        this.setInitMethod(name);
+        return this;
+    }
+
+    public BeanBuilder destroyMethod(String name){
+        this.setDestroyMethod(name);
         return this;
     }
 

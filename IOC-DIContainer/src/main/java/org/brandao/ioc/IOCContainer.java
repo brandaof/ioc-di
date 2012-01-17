@@ -75,9 +75,9 @@ public abstract class IOCContainer {
 
         Injectable oldBean = getBeanDefinition( name );
 
-        if( oldBean != null && oldBean.getTarget() != classType )
+        /*if( oldBean != null && oldBean.getTarget() != classType )
             throw new BeanExistException( name );
-        else
+        else*/
         if( oldBean != null )
             removeBeanDefinition( name );
 
