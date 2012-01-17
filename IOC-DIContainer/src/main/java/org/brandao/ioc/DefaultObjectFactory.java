@@ -46,6 +46,8 @@ public class DefaultObjectFactory implements ObjectFactory{
         try{
             Object instance = getInstanceByConstructor();
 
+            callInitMethod(instance);
+            
             List property = beanDefinition.getProperties();
 
             if( property != null ){
@@ -123,6 +125,20 @@ public class DefaultObjectFactory implements ObjectFactory{
 
     private Object getValueInject( ValueInject value ){
         return value.getValue();
+    }
+
+    protected void callInitMethod(Object instance)
+            throws NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException{
+        
+        String methodName = beanDefinition.getInitMethod();
+
+        if( methodName != null ){
+            Class clazz = beanDefinition.getTarget();
+            Method method =
+                    clazz.getMethod(methodName, new Class[]{});
+            method.invoke(instance, new Object[]{});
+        }
     }
 
 }
