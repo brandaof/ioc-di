@@ -23,6 +23,18 @@ package org.brandao.ioc;
  */
 public class BuilderIOCContainer extends IOCContainer{
 
+    public BuilderIOCContainer( ScopeManager scopeManager, IOCContainer parent ){
+        super(scopeManager,parent);
+    }
+
+    public BuilderIOCContainer(){
+        this( new ScopeManager(), RootContainer.getInstance() );
+    }
+
+    public BuilderIOCContainer( IOCContainer parent ){
+        this( new ScopeManager(), parent );
+    }
+
     public BeanBuilder addBean( Class clazz ){
         return addBean( clazz.getName(), clazz );
     }
