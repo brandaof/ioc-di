@@ -75,7 +75,7 @@ public class DefaultObjectFactory implements ObjectFactory{
             return instance;
         }
         catch( IOCException e ){
-            throw e;
+            throw new IOCException("error when instantiating " + beanDefinition.getName(),e);
         }
         catch( Exception e ){
             throw new IOCException( "error when instantiating " + beanDefinition.getName(), e );

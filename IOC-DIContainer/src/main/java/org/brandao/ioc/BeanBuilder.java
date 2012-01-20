@@ -102,6 +102,10 @@ public class BeanBuilder extends Injectable{
         return this;
     }
 
+    public BeanBuilder setFactory(Class factory){
+        return setFactory(factory.getName());
+    }
+
     public BeanBuilder setFactory(String factory) {
         super.setFactoryRef(factory);
         return this;
@@ -120,6 +124,10 @@ public class BeanBuilder extends Injectable{
         return beanBuilder;
     }
 
+    public BeanBuilder addConstructorRefArg( Class ref ){
+        return addConstructorRefArg( ref.getName() );
+    }
+    
     public BeanBuilder addConstructorRefArg( String ref ){
         BeanBuilder refBean = (BeanBuilder) container.getBeanDefinition( ref );
 

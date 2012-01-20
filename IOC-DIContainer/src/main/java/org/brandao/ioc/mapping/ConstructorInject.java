@@ -156,7 +156,7 @@ public class ConstructorInject {
                 classArgs[ i ] = arg.getTarget();
         }
 
-        Method[] methods = clazz.getDeclaredMethods();
+        Method[] methods = clazz.getMethods();
         for( int i=0;i<methods.length;i++ ){
             Method m = methods[i];
             if( m.getName().equals(name) && 
@@ -167,7 +167,7 @@ public class ConstructorInject {
             }
         }
 
-        String msg = "not found: " + clazz.getName() + "( ";
+        String msg = "not found: " + clazz.getName() + "." + name + "( ";
 
         for( int i=0;i<classArgs.length;i++ ){
             Class arg = classArgs[i];
